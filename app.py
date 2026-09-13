@@ -1,4 +1,3 @@
-
 import io
 import os
 import re
@@ -41,9 +40,7 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* ========================================================
-       GLOBAL
-       ======================================================== */
+    /* ---------- Global ---------- */
     html, body, [class*="css"] {
         font-family: Inter, -apple-system, BlinkMacSystemFont,
         "Segoe UI", sans-serif;
@@ -52,63 +49,56 @@ st.markdown(
     .stApp {
         position: relative;
         background:
-            radial-gradient(circle at 10% 5%, rgba(200,164,93,.09), transparent 25%),
-            radial-gradient(circle at 90% 15%, rgba(11,31,51,.07), transparent 30%),
+            radial-gradient(circle at 10% 5%, rgba(200,164,93,.08), transparent 25%),
+            radial-gradient(circle at 90% 15%, rgba(11,31,51,.06), transparent 30%),
             linear-gradient(180deg, #faf9f6 0%, #f5f5f2 52%, #eef1f0 100%);
         color: #252525;
     }
 
-    /* ========================================================
-       SUBTLE WAVY BACKGROUND — stays behind the whole app
-       ======================================================== */
+    /* Subtle fixed wave texture — decorative only, never blocks the app. */
     .stApp::before {
         content: "";
         position: fixed;
-        left: -12%;
-        right: -12%;
-        bottom: -10%;
-        height: 58vh;
-        min-height: 360px;
+        left: -10%;
+        right: -10%;
+        bottom: -6%;
+        height: 52vh;
+        min-height: 320px;
         pointer-events: none;
         z-index: 0;
-        opacity: .62;
+        opacity: .55;
         background:
-            radial-gradient(ellipse 80% 44% at 50% 100%,
-                transparent 0 40%,
-                rgba(11,31,51,.042) 40.35% 40.75%,
-                transparent 41.1% 48%,
-                rgba(200,164,93,.060) 48.35% 48.75%,
-                transparent 49.1% 56%,
-                rgba(11,31,51,.035) 56.35% 56.75%,
-                transparent 57.1% 64%,
-                rgba(200,164,93,.045) 64.35% 64.75%,
-                transparent 65.1% 100%);
-        transform: rotate(-2deg) scale(1.15);
+            radial-gradient(ellipse 90% 42% at 50% 100%,
+                transparent 0 42%,
+                rgba(11,31,51,.035) 42.4% 42.8%,
+                transparent 43.2% 50%,
+                rgba(200,164,93,.05) 50.4% 50.8%,
+                transparent 51.2% 58%,
+                rgba(11,31,51,.03) 58.4% 58.8%,
+                transparent 59.2% 66%,
+                rgba(200,164,93,.04) 66.4% 66.8%,
+                transparent 67.2% 100%);
+        transform: rotate(-2deg) scale(1.12);
     }
 
     .main .block-container {
         position: relative;
         z-index: 2;
-        max-width: 1380px;
-        padding-top: 1.5rem;
-        padding-bottom: 3rem;
     }
 
-    /* ========================================================
-       FIXED CENTRAL WATERMARK
-       ======================================================== */
+    /* Fixed, medium-size Digital Justice watermark. */
     .dj-watermark {
         position: fixed;
         left: 50%;
         top: 54%;
-        width: min(470px, 56vw);
-        height: min(470px, 56vw);
-        min-width: 320px;
-        min-height: 320px;
+        width: min(430px, 48vw);
+        height: min(430px, 48vw);
+        min-width: 300px;
+        min-height: 300px;
         transform: translate(-50%, -50%);
         pointer-events: none;
         z-index: 1;
-        opacity: .095;
+        opacity: .075;
     }
 
     .dj-watermark svg {
@@ -120,31 +110,31 @@ st.markdown(
     .dj-watermark .outer-ring {
         fill: none;
         stroke: #c8a45d;
-        stroke-width: 2.2;
+        stroke-width: 2.4;
     }
 
     .dj-watermark .inner-ring {
         fill: none;
-        stroke: rgba(200,164,93,.72);
-        stroke-width: 1.25;
+        stroke: #c8a45d;
+        stroke-width: 1.2;
     }
 
     .dj-watermark .phrase {
         fill: #b7924f;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 800;
-        letter-spacing: 2.1px;
+        letter-spacing: 1.9px;
     }
 
     .dj-watermark .scale-circle {
-        fill: rgba(200,164,93,.035);
-        stroke: rgba(200,164,93,.72);
-        stroke-width: 1.3;
+        fill: rgba(200,164,93,.025);
+        stroke: #c8a45d;
+        stroke-width: 1.4;
     }
 
     .dj-watermark .scale {
         fill: #c8a45d;
-        font-size: 72px;
+        font-size: 68px;
         font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", sans-serif;
         text-anchor: middle;
         dominant-baseline: middle;
@@ -152,15 +142,19 @@ st.markdown(
 
     .dj-watermark .title {
         fill: #0b1f33;
-        font-size: 18px;
+        font-size: 17px;
         font-weight: 900;
-        letter-spacing: 4px;
+        letter-spacing: 3.5px;
         text-anchor: middle;
     }
 
-    /* ========================================================
-       SIDEBAR
-       ======================================================== */
+    .main .block-container {
+        max-width: 1380px;
+        padding-top: 1.5rem;
+        padding-bottom: 3rem;
+    }
+
+    /* ---------- Sidebar ---------- */
     section[data-testid="stSidebar"] {
         background: linear-gradient(180deg, #081b2d 0%, #0b1f33 55%, #102b43 100%);
         border-right: 1px solid rgba(200,164,93,.22);
@@ -182,6 +176,7 @@ st.markdown(
         border-color: rgba(255,255,255,.12);
     }
 
+    /* Sidebar radio navigation */
     section[data-testid="stSidebar"] div[role="radiogroup"] label {
         border-radius: 9px;
         padding: 6px 8px;
@@ -191,16 +186,14 @@ st.markdown(
         background: rgba(255,255,255,.06);
     }
 
-    /* Sidebar action buttons: WHITE background + BLACK text.
-       Descendants are explicitly forced black because Streamlit
-       can place the label inside a nested span/div. */
+    /* Sidebar buttons: plain white, black text, no hover recolor */
     section[data-testid="stSidebar"] .stButton > button,
     section[data-testid="stSidebar"] .stLinkButton > a,
     section[data-testid="stSidebar"] .stButton > button *,
     section[data-testid="stSidebar"] .stLinkButton > a * {
         background: #ffffff !important;
         color: #111111 !important;
-        border: 1px solid #ffffff !important;
+        border-color: #ffffff !important;
         box-shadow: none !important;
         text-shadow: none !important;
     }
@@ -225,13 +218,11 @@ st.markdown(
         color: #111111 !important;
         border-color: #ffffff !important;
         box-shadow: none !important;
-        text-shadow: none !important;
         transform: none !important;
+        text-shadow: none !important;
     }
 
-    /* ========================================================
-       ALL ORDINARY BUTTONS
-       ======================================================== */
+    /* ---------- All ordinary buttons ---------- */
     .stButton > button,
     .stLinkButton > a,
     .stDownloadButton > button {
@@ -264,9 +255,8 @@ st.markdown(
         transform: none !important;
     }
 
-    /* Suggested questions keep their grey/white appearance. */
-    div[data-testid="stHorizontalBlock"] .stButton > button,
-    div[data-testid="stHorizontalBlock"] .stButton > button * {
+    /* Suggested questions */
+    div[data-testid="stHorizontalBlock"] .stButton > button {
         background: #68737d !important;
         color: #ffffff !important;
         border-color: #68737d !important;
@@ -276,11 +266,7 @@ st.markdown(
     div[data-testid="stHorizontalBlock"] .stButton > button:hover,
     div[data-testid="stHorizontalBlock"] .stButton > button:focus,
     div[data-testid="stHorizontalBlock"] .stButton > button:focus-visible,
-    div[data-testid="stHorizontalBlock"] .stButton > button:active,
-    div[data-testid="stHorizontalBlock"] .stButton > button:hover *,
-    div[data-testid="stHorizontalBlock"] .stButton > button:focus *,
-    div[data-testid="stHorizontalBlock"] .stButton > button:focus-visible *,
-    div[data-testid="stHorizontalBlock"] .stButton > button:active * {
+    div[data-testid="stHorizontalBlock"] .stButton > button:active {
         background: #68737d !important;
         color: #ffffff !important;
         border-color: #68737d !important;
@@ -288,13 +274,17 @@ st.markdown(
         transform: none !important;
     }
 
-    /* ========================================================
-       CONTENT / INPUTS / CHAT
-       ======================================================== */
-    h1, h2, h3 { color: #0b1f33; }
+    /* ---------- Native content styling ---------- */
+    /* ---------- Main headings ---------- */
+    h1, h2, h3 {
+        color: #0b1f33;
+    }
 
-    [data-testid="stCaptionContainer"] p { color: #68737d; }
+    [data-testid="stCaptionContainer"] p {
+        color: #68737d;
+    }
 
+    /* ---------- Inputs ---------- */
     .stTextInput input,
     .stTextArea textarea,
     .stNumberInput input {
@@ -304,8 +294,11 @@ st.markdown(
         border: 1px solid #252525 !important;
     }
 
-    [data-baseweb="select"] { border-radius: 10px !important; }
+    [data-baseweb="select"] {
+        border-radius: 10px !important;
+    }
 
+    /* ---------- Chat ---------- */
     [data-testid="stChatMessage"] {
         background: #ffffff !important;
         border: 1px solid #252525 !important;
@@ -316,7 +309,9 @@ st.markdown(
 
     [data-testid="stChatMessage"] p,
     [data-testid="stChatMessage"] li,
-    [data-testid="stChatMessage"] span { color: #252525 !important; }
+    [data-testid="stChatMessage"] span {
+        color: #252525 !important;
+    }
 
     [data-testid="stChatInput"] {
         background: #ffffff !important;
@@ -329,8 +324,11 @@ st.markdown(
         background: #ffffff !important;
     }
 
-    [data-testid="stChatInput"] textarea::placeholder { color: #68737d !important; }
+    [data-testid="stChatInput"] textarea::placeholder {
+        color: #68737d !important;
+    }
 
+    /* ---------- Metrics ---------- */
     div[data-testid="stMetric"] {
         background: #ffffff !important;
         border: 1px solid rgba(11,31,51,.10);
@@ -339,9 +337,15 @@ st.markdown(
         box-shadow: 0 7px 22px rgba(11,31,51,.05);
     }
 
-    div[data-testid="stMetricLabel"] { color: #68737d !important; }
-    div[data-testid="stMetricValue"] { color: #0b1f33 !important; }
+    div[data-testid="stMetricLabel"] {
+        color: #68737d !important;
+    }
 
+    div[data-testid="stMetricValue"] {
+        color: #0b1f33 !important;
+    }
+
+    /* ---------- Expanders / cards ---------- */
     div[data-testid="stExpander"] {
         border: 1px solid rgba(11,31,51,.12);
         border-radius: 13px;
@@ -361,30 +365,36 @@ st.markdown(
             padding-right: 1rem;
         }
         .dj-watermark {
-            width: 315px;
-            height: 315px;
-            min-width: 315px;
-            min-height: 315px;
+            width: 300px;
+            height: 300px;
+            min-width: 300px;
+            min-height: 300px;
             top: 56%;
-            opacity: .085;
         }
-        .dj-watermark .phrase { font-size: 10px; letter-spacing: 1.3px; }
-        .dj-watermark .scale { font-size: 56px; }
-        .dj-watermark .title { font-size: 14px; letter-spacing: 3px; }
+        .dj-watermark .phrase {
+            font-size: 9.5px;
+            letter-spacing: 1.2px;
+        }
+        .dj-watermark .scale {
+            font-size: 55px;
+        }
+        .dj-watermark .title {
+            font-size: 13px;
+            letter-spacing: 2.7px;
+        }
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# Fixed watermark: rendered once, independent of page scroll.
+# Decorative watermark only; application logic remains untouched.
 st.markdown(
     """
     <div class="dj-watermark" aria-hidden="true">
       <svg viewBox="0 0 500 500" role="presentation">
         <defs>
-          <path id="djPhrasePath"
-                d="M 250,250 m -210,0 a 210,210 0 1,1 420,0 a 210,210 0 1,1 -420,0" />
+          <path id="djPhrasePath" d="M 250,250 m -210,0 a 210,210 0 1,1 420,0 a 210,210 0 1,1 -420,0" />
         </defs>
         <circle class="outer-ring" cx="250" cy="250" r="220" />
         <circle class="inner-ring" cx="250" cy="250" r="184" />
@@ -401,7 +411,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
 
 
 # ============================================================

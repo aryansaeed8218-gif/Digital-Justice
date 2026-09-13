@@ -1,4 +1,3 @@
-
 import io
 import os
 import re
@@ -32,77 +31,121 @@ st.set_page_config(
 
 
 # ============================================================
-# CSS ONLY
-# IMPORTANT: Visible UI below is built with native Streamlit
-# widgets/markdown. No visible HTML is used, so HTML source
-# cannot accidentally appear as text in the interface.
+# UI / CSS
 # ============================================================
 
 st.markdown(
     """
     <style>
-    /* ---------- Global ---------- */
-    html, body, [class*="css"] {
+
+    /* ========================================================
+       GLOBAL
+       ======================================================== */
+
+    html,
+    body,
+    [class*="css"] {
         font-family: Inter, -apple-system, BlinkMacSystemFont,
         "Segoe UI", sans-serif;
     }
 
     .stApp {
         position: relative;
+        min-height: 100vh;
         background:
-            radial-gradient(circle at 10% 5%, rgba(200,164,93,.08), transparent 25%),
-            radial-gradient(circle at 90% 15%, rgba(11,31,51,.06), transparent 30%),
-            linear-gradient(180deg, #faf9f6 0%, #f5f5f2 52%, #eef1f0 100%);
+            radial-gradient(
+                circle at 10% 8%,
+                rgba(200,164,93,.07),
+                transparent 24%
+            ),
+            radial-gradient(
+                circle at 92% 12%,
+                rgba(11,31,51,.055),
+                transparent 28%
+            ),
+            linear-gradient(
+                180deg,
+                #faf9f6 0%,
+                #f6f5f1 48%,
+                #eef1f0 100%
+            );
         color: #252525;
     }
 
-    /* Subtle fixed wave texture — decorative only, never blocks the app. */
+
+    /* ========================================================
+       SUBTLE BACKGROUND WAVES
+       ======================================================== */
+
     .stApp::before {
         content: "";
         position: fixed;
-        left: -10%;
-        right: -10%;
-        bottom: -6%;
-        height: 52vh;
-        min-height: 320px;
+        left: -15%;
+        right: -15%;
+        bottom: -12%;
+        height: 62vh;
+        min-height: 360px;
         pointer-events: none;
         z-index: 0;
-        opacity: .55;
+
         background:
-            radial-gradient(ellipse 90% 42% at 50% 100%,
-                transparent 0 42%,
-                rgba(11,31,51,.035) 42.4% 42.8%,
-                transparent 43.2% 50%,
-                rgba(200,164,93,.05) 50.4% 50.8%,
-                transparent 51.2% 58%,
-                rgba(11,31,51,.03) 58.4% 58.8%,
-                transparent 59.2% 66%,
-                rgba(200,164,93,.04) 66.4% 66.8%,
-                transparent 67.2% 100%);
-        transform: rotate(-2deg) scale(1.12);
+            radial-gradient(
+                ellipse 92% 46% at 50% 112%,
+                transparent 0 45%,
+                rgba(11,31,51,.035) 45.3% 45.7%,
+                transparent 46% 53%,
+                rgba(200,164,93,.045) 53.3% 53.7%,
+                transparent 54% 61%,
+                rgba(11,31,51,.028) 61.3% 61.7%,
+                transparent 62% 69%,
+                rgba(200,164,93,.035) 69.3% 69.7%,
+                transparent 70% 100%
+            );
+
+        transform: rotate(-2deg) scale(1.08);
     }
+
+
+    /* ========================================================
+       MAIN CONTENT ABOVE DECORATION
+       ======================================================== */
 
     .main .block-container {
         position: relative;
-        z-index: 2;
+        z-index: 3;
+        max-width: 1380px;
+        padding-top: 1.5rem;
+        padding-bottom: 3rem;
     }
 
-    /* Fixed, medium-size Digital Justice watermark. */
+
+    /* ========================================================
+       FIXED DIGITAL JUSTICE WATERMARK
+       ======================================================== */
+
     .dj-watermark {
         position: fixed;
+
         left: 50%;
         top: 54%;
-        width: min(430px, 48vw);
-        height: min(430px, 48vw);
+
+        width: min(430px, 46vw);
+        height: min(430px, 46vw);
+
         min-width: 300px;
         min-height: 300px;
+
         transform: translate(-50%, -50%);
+
         pointer-events: none;
+
         z-index: 1;
+
         opacity: .075;
     }
 
     .dj-watermark svg {
+        display: block;
         width: 100%;
         height: 100%;
         overflow: visible;
@@ -111,32 +154,35 @@ st.markdown(
     .dj-watermark .outer-ring {
         fill: none;
         stroke: #c8a45d;
-        stroke-width: 2.4;
+        stroke-width: 2.5;
     }
 
     .dj-watermark .inner-ring {
         fill: none;
         stroke: #c8a45d;
-        stroke-width: 1.2;
+        stroke-width: 1.25;
     }
 
     .dj-watermark .phrase {
         fill: #b7924f;
         font-size: 12px;
         font-weight: 800;
-        letter-spacing: 1.9px;
+        letter-spacing: 1.75px;
     }
 
     .dj-watermark .scale-circle {
         fill: rgba(200,164,93,.025);
         stroke: #c8a45d;
-        stroke-width: 1.4;
+        stroke-width: 1.5;
     }
 
     .dj-watermark .scale {
         fill: #c8a45d;
-        font-size: 68px;
-        font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", sans-serif;
+        font-size: 70px;
+        font-family:
+            "Segoe UI Symbol",
+            "Noto Sans Symbols 2",
+            sans-serif;
         text-anchor: middle;
         dominant-baseline: middle;
     }
@@ -149,27 +195,74 @@ st.markdown(
         text-anchor: middle;
     }
 
-    .main .block-container {
-        max-width: 1380px;
-        padding-top: 1.5rem;
-        padding-bottom: 3rem;
+
+    /* ========================================================
+       SIDEBAR
+       ======================================================== */
+
+    section[data-testid="stSidebar"] {
+        position: relative;
+
+        background:
+            linear-gradient(
+                180deg,
+                #081b2d 0%,
+                #0b1f33 55%,
+                #102b43 100%
+            );
+
+        border-right: 1px solid rgba(200,164,93,.22);
+        overflow: hidden;
     }
 
-    /* ---------- Sidebar ---------- */
-    section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #081b2d 0%, #0b1f33 55%, #102b43 100%);
-        border-right: 1px solid rgba(200,164,93,.22);
+    /* Sidebar wave decoration */
+    section[data-testid="stSidebar"]::after {
+        content: "";
+        position: absolute;
+
+        left: -35%;
+        right: -35%;
+        bottom: -8%;
+
+        height: 55%;
+
+        pointer-events: none;
+
+        opacity: .18;
+
+        background:
+            radial-gradient(
+                ellipse 90% 45% at 50% 100%,
+                transparent 0 48%,
+                rgba(200,164,93,.32) 48.4% 48.8%,
+                transparent 49.2% 57%,
+                rgba(255,255,255,.14) 57.4% 57.8%,
+                transparent 58.2% 66%,
+                rgba(200,164,93,.22) 66.4% 66.8%,
+                transparent 67.2% 100%
+            );
+
+        transform: rotate(-4deg) scale(1.12);
+
+        z-index: 0;
+    }
+
+    section[data-testid="stSidebar"] > div {
+        position: relative;
+        z-index: 2;
     }
 
     section[data-testid="stSidebar"] * {
         color: #f7f6f2;
     }
 
-    section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
+    section[data-testid="stSidebar"]
+    [data-testid="stMarkdownContainer"] p {
         color: #f7f6f2;
     }
 
-    section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
+    section[data-testid="stSidebar"]
+    [data-testid="stCaptionContainer"] p {
         color: #c8a45d !important;
     }
 
@@ -177,63 +270,131 @@ st.markdown(
         border-color: rgba(255,255,255,.12);
     }
 
-    /* Sidebar radio navigation */
-    section[data-testid="stSidebar"] div[role="radiogroup"] label {
+
+    /* ========================================================
+       SIDEBAR NAVIGATION
+       ======================================================== */
+
+    section[data-testid="stSidebar"]
+    div[role="radiogroup"] label {
         border-radius: 9px;
         padding: 6px 8px;
     }
 
-    section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
+    section[data-testid="stSidebar"]
+    div[role="radiogroup"] label:hover {
         background: rgba(255,255,255,.06);
     }
 
-    /* Sidebar buttons: plain white, black text, no hover recolor */
-    section[data-testid="stSidebar"] .stButton > button,
-    section[data-testid="stSidebar"] .stLinkButton > a,
-    section[data-testid="stSidebar"] .stButton > button *,
-    section[data-testid="stSidebar"] .stLinkButton > a * {
+
+    /* ========================================================
+       NCCIA + CLEAR CONVERSATION BUTTONS
+       WHITE BACKGROUND / BLACK TEXT
+       NO HOVER / FOCUS / ACTIVE COLOR CHANGE
+       ======================================================== */
+
+    section[data-testid="stSidebar"]
+    .stButton > button,
+
+    section[data-testid="stSidebar"]
+    .stLinkButton > a,
+
+    section[data-testid="stSidebar"]
+    .stButton > button *,
+
+    section[data-testid="stSidebar"]
+    .stLinkButton > a * {
         background: #ffffff !important;
         color: #111111 !important;
-        border-color: #ffffff !important;
+
+        border: 1px solid #ffffff !important;
+
         box-shadow: none !important;
         text-shadow: none !important;
+
+        transition: none !important;
     }
 
-    section[data-testid="stSidebar"] .stButton > button:hover,
-    section[data-testid="stSidebar"] .stButton > button:focus,
-    section[data-testid="stSidebar"] .stButton > button:focus-visible,
-    section[data-testid="stSidebar"] .stButton > button:active,
-    section[data-testid="stSidebar"] .stLinkButton > a:hover,
-    section[data-testid="stSidebar"] .stLinkButton > a:focus,
-    section[data-testid="stSidebar"] .stLinkButton > a:focus-visible,
-    section[data-testid="stSidebar"] .stLinkButton > a:active,
-    section[data-testid="stSidebar"] .stButton > button:hover *,
-    section[data-testid="stSidebar"] .stButton > button:focus *,
-    section[data-testid="stSidebar"] .stButton > button:focus-visible *,
-    section[data-testid="stSidebar"] .stButton > button:active *,
-    section[data-testid="stSidebar"] .stLinkButton > a:hover *,
-    section[data-testid="stSidebar"] .stLinkButton > a:focus *,
-    section[data-testid="stSidebar"] .stLinkButton > a:focus-visible *,
-    section[data-testid="stSidebar"] .stLinkButton > a:active * {
+    section[data-testid="stSidebar"]
+    .stButton > button:hover,
+
+    section[data-testid="stSidebar"]
+    .stButton > button:focus,
+
+    section[data-testid="stSidebar"]
+    .stButton > button:focus-visible,
+
+    section[data-testid="stSidebar"]
+    .stButton > button:active,
+
+    section[data-testid="stSidebar"]
+    .stLinkButton > a:hover,
+
+    section[data-testid="stSidebar"]
+    .stLinkButton > a:focus,
+
+    section[data-testid="stSidebar"]
+    .stLinkButton > a:focus-visible,
+
+    section[data-testid="stSidebar"]
+    .stLinkButton > a:active,
+
+    section[data-testid="stSidebar"]
+    .stButton > button:hover *,
+
+    section[data-testid="stSidebar"]
+    .stButton > button:focus *,
+
+    section[data-testid="stSidebar"]
+    .stButton > button:focus-visible *,
+
+    section[data-testid="stSidebar"]
+    .stButton > button:active *,
+
+    section[data-testid="stSidebar"]
+    .stLinkButton > a:hover *,
+
+    section[data-testid="stSidebar"]
+    .stLinkButton > a:focus *,
+
+    section[data-testid="stSidebar"]
+    .stLinkButton > a:focus-visible *,
+
+    section[data-testid="stSidebar"]
+    .stLinkButton > a:active * {
         background: #ffffff !important;
         color: #111111 !important;
+
         border-color: #ffffff !important;
+
         box-shadow: none !important;
+        text-shadow: none !important;
+
         transform: none !important;
-        text-shadow: none !important;
+
+        transition: none !important;
     }
 
-    /* ---------- All ordinary buttons ---------- */
+
+    /* ========================================================
+       NORMAL BUTTONS
+       ======================================================== */
+
     .stButton > button,
     .stLinkButton > a,
     .stDownloadButton > button {
         background: #ffffff !important;
         color: #252525 !important;
+
         border: 1px solid #252525 !important;
         border-radius: 10px !important;
+
         font-weight: 700 !important;
+
         min-height: 42px;
+
         box-shadow: none !important;
+
         transition: none !important;
     }
 
@@ -241,43 +402,69 @@ st.markdown(
     .stButton > button:focus,
     .stButton > button:focus-visible,
     .stButton > button:active,
+
     .stLinkButton > a:hover,
     .stLinkButton > a:focus,
     .stLinkButton > a:focus-visible,
     .stLinkButton > a:active,
+
     .stDownloadButton > button:hover,
     .stDownloadButton > button:focus,
     .stDownloadButton > button:focus-visible,
     .stDownloadButton > button:active {
         background: #ffffff !important;
         color: #252525 !important;
+
         border-color: #252525 !important;
+
         box-shadow: none !important;
+
         transform: none !important;
+
+        transition: none !important;
     }
 
-    /* Suggested questions */
-    div[data-testid="stHorizontalBlock"] .stButton > button {
+
+    /* ========================================================
+       SUGGESTED QUESTIONS
+       ======================================================== */
+
+    div[data-testid="stHorizontalBlock"]
+    .stButton > button {
         background: #68737d !important;
         color: #ffffff !important;
         border-color: #68737d !important;
+
         text-align: left !important;
     }
 
-    div[data-testid="stHorizontalBlock"] .stButton > button:hover,
-    div[data-testid="stHorizontalBlock"] .stButton > button:focus,
-    div[data-testid="stHorizontalBlock"] .stButton > button:focus-visible,
-    div[data-testid="stHorizontalBlock"] .stButton > button:active {
+    div[data-testid="stHorizontalBlock"]
+    .stButton > button:hover,
+
+    div[data-testid="stHorizontalBlock"]
+    .stButton > button:focus,
+
+    div[data-testid="stHorizontalBlock"]
+    .stButton > button:focus-visible,
+
+    div[data-testid="stHorizontalBlock"]
+    .stButton > button:active {
         background: #68737d !important;
         color: #ffffff !important;
         border-color: #68737d !important;
+
         box-shadow: none !important;
         transform: none !important;
     }
 
-    /* ---------- Native content styling ---------- */
-    /* ---------- Main headings ---------- */
-    h1, h2, h3 {
+
+    /* ========================================================
+       HEADINGS
+       ======================================================== */
+
+    h1,
+    h2,
+    h3 {
         color: #0b1f33;
     }
 
@@ -285,13 +472,19 @@ st.markdown(
         color: #68737d;
     }
 
-    /* ---------- Inputs ---------- */
+
+    /* ========================================================
+       INPUTS
+       ======================================================== */
+
     .stTextInput input,
     .stTextArea textarea,
     .stNumberInput input {
         border-radius: 10px !important;
+
         color: #252525 !important;
         background: #ffffff !important;
+
         border: 1px solid #252525 !important;
     }
 
@@ -299,13 +492,25 @@ st.markdown(
         border-radius: 10px !important;
     }
 
-    /* ---------- Chat ---------- */
+
+    /* ========================================================
+       CHAT
+       ======================================================== */
+
     [data-testid="stChatMessage"] {
+        position: relative;
+        z-index: 3;
+
         background: #ffffff !important;
+
         border: 1px solid #252525 !important;
+
         border-radius: 15px;
+
         margin-bottom: 11px;
-        box-shadow: 0 4px 14px rgba(11,31,51,.06);
+
+        box-shadow:
+            0 4px 14px rgba(11,31,51,.06);
     }
 
     [data-testid="stChatMessage"] p,
@@ -315,8 +520,13 @@ st.markdown(
     }
 
     [data-testid="stChatInput"] {
+        position: relative;
+        z-index: 3;
+
         background: #ffffff !important;
+
         border: 1px solid #252525 !important;
+
         border-radius: 13px !important;
     }
 
@@ -325,17 +535,27 @@ st.markdown(
         background: #ffffff !important;
     }
 
-    [data-testid="stChatInput"] textarea::placeholder {
+    [data-testid="stChatInput"]
+    textarea::placeholder {
         color: #68737d !important;
     }
 
-    /* ---------- Metrics ---------- */
+
+    /* ========================================================
+       METRICS
+       ======================================================== */
+
     div[data-testid="stMetric"] {
         background: #ffffff !important;
+
         border: 1px solid rgba(11,31,51,.10);
+
         border-radius: 14px;
+
         padding: 12px 14px;
-        box-shadow: 0 7px 22px rgba(11,31,51,.05);
+
+        box-shadow:
+            0 7px 22px rgba(11,31,51,.05);
     }
 
     div[data-testid="stMetricLabel"] {
@@ -346,68 +566,141 @@ st.markdown(
         color: #0b1f33 !important;
     }
 
-    /* ---------- Expanders / cards ---------- */
+
+    /* ========================================================
+       EXPANDERS / CARDS
+       ======================================================== */
+
     div[data-testid="stExpander"] {
         border: 1px solid rgba(11,31,51,.12);
+
         border-radius: 13px;
+
         background: rgba(255,255,255,.82);
     }
 
-    .footer {
-        text-align: center;
-        color: #87919a;
-        font-size: .72rem;
-        padding: 30px 0 4px;
-    }
+
+    /* ========================================================
+       MOBILE
+       ======================================================== */
 
     @media (max-width: 700px) {
+
         .main .block-container {
             padding-left: 1rem;
             padding-right: 1rem;
         }
+
         .dj-watermark {
             width: 300px;
             height: 300px;
+
             min-width: 300px;
             min-height: 300px;
+
             top: 56%;
+
+            opacity: .06;
         }
+
         .dj-watermark .phrase {
             font-size: 9.5px;
-            letter-spacing: 1.2px;
+            letter-spacing: 1.15px;
         }
+
         .dj-watermark .scale {
             font-size: 55px;
         }
+
         .dj-watermark .title {
             font-size: 13px;
             letter-spacing: 2.7px;
         }
     }
+
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# Decorative watermark only; application logic remains untouched.
+
+# ============================================================
+# DECORATIVE FIXED WATERMARK ONLY
+# ============================================================
+
 st.markdown(
     """
     <div class="dj-watermark" aria-hidden="true">
-      <svg viewBox="0 0 500 500" role="presentation">
-        <defs>
-          <path id="djPhrasePath" d="M 250,250 m -210,0 a 210,210 0 1,1 420,0 a 210,210 0 1,1 -420,0" />
-        </defs>
-        <circle class="outer-ring" cx="250" cy="250" r="220" />
-        <circle class="inner-ring" cx="250" cy="250" r="184" />
-        <text class="phrase">
-          <textPath href="#djPhrasePath" startOffset="50%" text-anchor="middle">
-            LEGAL-TECH • RAG • DIGITAL RIGHTS • PRIVACY • SECURITY • JUSTICE •
-          </textPath>
-        </text>
-        <circle class="scale-circle" cx="250" cy="250" r="72" />
-        <text class="scale" x="250" y="250">⚖</text>
-        <text class="title" x="250" y="355">DIGITAL JUSTICE</text>
-      </svg>
+        <svg
+            viewBox="0 0 500 500"
+            role="presentation"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+
+            <defs>
+                <path
+                    id="djPhrasePath"
+                    d="
+                        M 250,250
+                        m -210,0
+                        a 210,210 0 1,1 420,0
+                        a 210,210 0 1,1 -420,0
+                    "
+                />
+            </defs>
+
+            <!-- Outer circular ring -->
+            <circle
+                class="outer-ring"
+                cx="250"
+                cy="250"
+                r="220"
+            />
+
+            <!-- Inner circular ring -->
+            <circle
+                class="inner-ring"
+                cx="250"
+                cy="250"
+                r="184"
+            />
+
+            <!-- Legal-tech phrase around ring -->
+            <text class="phrase">
+                <textPath
+                    href="#djPhrasePath"
+                    startOffset="50%"
+                    text-anchor="middle"
+                >
+                    LEGAL-TECH • RAG • DIGITAL RIGHTS • PRIVACY • SECURITY • JUSTICE •
+                </textPath>
+            </text>
+
+            <!-- Circle around law scale -->
+            <circle
+                class="scale-circle"
+                cx="250"
+                cy="250"
+                r="72"
+            />
+
+            <!-- Law weighing scale -->
+            <text
+                class="scale"
+                x="250"
+                y="250"
+            >⚖</text>
+
+            <!-- Digital Justice title -->
+            <text
+                class="title"
+                x="250"
+                y="355"
+            >
+                DIGITAL JUSTICE
+            </text>
+
+        </svg>
     </div>
     """,
     unsafe_allow_html=True,
@@ -467,95 +760,222 @@ if "settings" not in st.session_state:
 def get_groq_key() -> str:
     try:
         key = st.secrets.get("GROQ_API_KEY", "")
+
         if key:
             return key
+
     except Exception:
         pass
+
     return os.getenv("GROQ_API_KEY", "")
 
 
 def clean_text(text: str) -> str:
     text = text.replace("\x00", " ")
-    text = re.sub(r"[ \t]+", " ", text)
-    text = re.sub(r"\n{3,}", "\n\n", text)
+
+    text = re.sub(
+        r"[ \t]+",
+        " ",
+        text,
+    )
+
+    text = re.sub(
+        r"\n{3,}",
+        "\n\n",
+        text,
+    )
+
     return text.strip()
 
 
-def extract_text(file_name: str, data: bytes) -> str:
-    ext = os.path.splitext(file_name.lower())[1]
+def extract_text(
+    file_name: str,
+    data: bytes,
+) -> str:
+
+    ext = os.path.splitext(
+        file_name.lower()
+    )[1]
 
     if ext == ".pdf":
-        reader = PdfReader(io.BytesIO(data))
+
+        reader = PdfReader(
+            io.BytesIO(data)
+        )
+
         parts = []
+
         for page in reader.pages:
+
             try:
-                parts.append(page.extract_text() or "")
+                parts.append(
+                    page.extract_text() or ""
+                )
+
             except Exception:
                 continue
-        return clean_text("\n\n".join(parts))
+
+        return clean_text(
+            "\n\n".join(parts)
+        )
 
     if ext == ".docx":
-        doc = Document(io.BytesIO(data))
-        return clean_text("\n\n".join(p.text for p in doc.paragraphs))
 
-    return clean_text(data.decode("utf-8", errors="ignore"))
+        doc = Document(
+            io.BytesIO(data)
+        )
+
+        return clean_text(
+            "\n\n".join(
+                p.text
+                for p in doc.paragraphs
+            )
+        )
+
+    return clean_text(
+        data.decode(
+            "utf-8",
+            errors="ignore",
+        )
+    )
 
 
-def make_chunks(text: str, chunk_size: int, overlap: int):
+def make_chunks(
+    text: str,
+    chunk_size: int,
+    overlap: int,
+):
+
     if not text:
         return []
 
-    chunk_size = max(100, int(chunk_size))
-    overlap = max(0, min(int(overlap), chunk_size // 2))
+    chunk_size = max(
+        100,
+        int(chunk_size),
+    )
+
+    overlap = max(
+        0,
+        min(
+            int(overlap),
+            chunk_size // 2,
+        ),
+    )
 
     chunks = []
+
     start = 0
+
     text_len = len(text)
 
     while start < text_len:
-        target_end = min(start + chunk_size, text_len)
+
+        target_end = min(
+            start + chunk_size,
+            text_len,
+        )
 
         if target_end < text_len:
+
             candidates = [
-                text.rfind("\n\n", start, target_end),
-                text.rfind(". ", start, target_end),
-                text.rfind("! ", start, target_end),
-                text.rfind("? ", start, target_end),
-                text.rfind(" ", start, target_end),
+                text.rfind(
+                    "\n\n",
+                    start,
+                    target_end,
+                ),
+
+                text.rfind(
+                    ". ",
+                    start,
+                    target_end,
+                ),
+
+                text.rfind(
+                    "! ",
+                    start,
+                    target_end,
+                ),
+
+                text.rfind(
+                    "? ",
+                    start,
+                    target_end,
+                ),
+
+                text.rfind(
+                    " ",
+                    start,
+                    target_end,
+                ),
             ]
+
             best = max(candidates)
 
-            if best > start + int(chunk_size * 0.55):
-                if text[best:best + 2] == ". ":
+            if best > start + int(
+                chunk_size * 0.55
+            ):
+
+                if text[
+                    best:best + 2
+                ] == ". ":
+
                     target_end = best + 2
+
                 else:
+
                     target_end = best + 1
 
-        piece = text[start:target_end].strip()
+        piece = text[
+            start:target_end
+        ].strip()
 
         if piece:
-            chunks.append((piece, start, target_end))
+
+            chunks.append(
+                (
+                    piece,
+                    start,
+                    target_end,
+                )
+            )
 
         if target_end >= text_len:
             break
 
-        start = max(target_end - overlap, start + 1)
+        start = max(
+            target_end - overlap,
+            start + 1,
+        )
 
     return chunks
 
 
 def rebuild_index():
+
     all_chunks = []
+
     cid = 0
 
-    for source, text in st.session_state.documents.items():
+    for source, text in (
+        st.session_state.documents.items()
+    ):
+
         generated = make_chunks(
             text,
-            st.session_state.settings["chunk_size"],
-            st.session_state.settings["chunk_overlap"],
+            st.session_state.settings[
+                "chunk_size"
+            ],
+            st.session_state.settings[
+                "chunk_overlap"
+            ],
         )
 
-        for piece, start, end in generated:
+        for (
+            piece,
+            start,
+            end,
+        ) in generated:
+
             all_chunks.append(
                 Chunk(
                     chunk_id=cid,
@@ -565,17 +985,30 @@ def rebuild_index():
                     end=end,
                 )
             )
+
             cid += 1
 
-    st.session_state.chunks = all_chunks
+    st.session_state.chunks = (
+        all_chunks
+    )
 
 
-def calculate_file_hash(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()
+def calculate_file_hash(
+    data: bytes,
+) -> str:
+
+    return hashlib.sha256(
+        data
+    ).hexdigest()
 
 
-@st.cache_data(show_spinner=False)
-def create_tfidf_matrix(texts: Tuple[str, ...]):
+@st.cache_data(
+    show_spinner=False
+)
+def create_tfidf_matrix(
+    texts: Tuple[str, ...]
+):
+
     if not texts:
         return None, None
 
@@ -587,48 +1020,108 @@ def create_tfidf_matrix(texts: Tuple[str, ...]):
         max_features=50000,
     )
 
-    matrix = vectorizer.fit_transform(texts)
+    matrix = vectorizer.fit_transform(
+        texts
+    )
+
     return vectorizer, matrix
 
 
-def retrieve_context(query: str, top_k: int, minimum_score: float):
+def retrieve_context(
+    query: str,
+    top_k: int,
+    minimum_score: float,
+):
+
     if not st.session_state.chunks:
         return []
 
-    texts = tuple(chunk.text for chunk in st.session_state.chunks)
-    vectorizer, matrix = create_tfidf_matrix(texts)
+    texts = tuple(
+        chunk.text
+        for chunk
+        in st.session_state.chunks
+    )
+
+    vectorizer, matrix = (
+        create_tfidf_matrix(texts)
+    )
 
     if vectorizer is None:
         return []
 
-    query_vector = vectorizer.transform([query])
-    scores = cosine_similarity(query_vector, matrix).flatten()
+    query_vector = (
+        vectorizer.transform(
+            [query]
+        )
+    )
 
-    ranked = scores.argsort()[::-1][:max(1, int(top_k))]
+    scores = cosine_similarity(
+        query_vector,
+        matrix,
+    ).flatten()
+
+    ranked = scores.argsort()[::-1][
+        :max(1, int(top_k))
+    ]
 
     results = []
+
     for index in ranked:
-        score = float(scores[index])
+
+        score = float(
+            scores[index]
+        )
+
         if score >= minimum_score:
-            results.append((st.session_state.chunks[index], score))
+
+            results.append(
+                (
+                    st.session_state.chunks[
+                        index
+                    ],
+                    score,
+                )
+            )
 
     return results
 
 
-def format_context(results) -> str:
+def format_context(
+    results,
+) -> str:
+
     if not results:
-        return "No relevant document context was retrieved."
+        return (
+            "No relevant document "
+            "context was retrieved."
+        )
 
     blocks = []
-    for i, (chunk, score) in enumerate(results, start=1):
+
+    for i, (
+        chunk,
+        score,
+    ) in enumerate(
+        results,
+        start=1,
+    ):
+
         blocks.append(
-            f"[Source {i}: {chunk.source} | similarity={score:.3f}]\n"
+            f"[Source {i}: "
+            f"{chunk.source} | "
+            f"similarity={score:.3f}]\n"
             f"{chunk.text}"
         )
-    return "\n\n".join(blocks)
+
+    return "\n\n".join(
+        blocks
+    )
 
 
-def detect_cybercrime(text: str) -> bool:
+def detect_cybercrime(
+    text: str,
+) -> bool:
+
     patterns = [
         r"\bblackmail\b",
         r"\bcyberbullying\b",
@@ -647,22 +1140,41 @@ def detect_cybercrime(text: str) -> bool:
         r"\bonline threat\b",
         r"\bthreatening me online\b",
     ]
-    return any(re.search(pattern, text, flags=re.I) for pattern in patterns)
+
+    return any(
+        re.search(
+            pattern,
+            text,
+            flags=re.I,
+        )
+        for pattern in patterns
+    )
 
 
-def generate_answer(question: str, retrieved_results):
+def generate_answer(
+    question: str,
+    retrieved_results,
+):
+
     api_key = get_groq_key()
 
     if not api_key:
+
         return (
             "⚠️ Groq API key is not configured.\n\n"
-            "Please add `GROQ_API_KEY` to Streamlit Secrets "
+            "Please add `GROQ_API_KEY` "
+            "to Streamlit Secrets "
             "or your environment."
         )
 
-    context = format_context(retrieved_results)
+    context = format_context(
+        retrieved_results
+    )
 
-    if st.session_state.settings["strict_grounding"]:
+    if st.session_state.settings[
+        "strict_grounding"
+    ]:
+
         grounding_rule = """
 Answer primarily from the retrieved context.
 
@@ -671,7 +1183,9 @@ information to answer the question, clearly say so.
 
 Never invent legal facts.
 """
+
     else:
+
         grounding_rule = """
 Use the retrieved context as the primary source.
 
@@ -719,7 +1233,10 @@ RETRIEVED KNOWLEDGE BASE:
 ---
 """
 
-    if detect_cybercrime(question):
+    if detect_cybercrime(
+        question
+    ):
+
         system_prompt += f"""
 When appropriate, include a short "Reporting option" section.
 Mention the official NCCIA complaint portal:
@@ -729,49 +1246,105 @@ Never say that Digital Justice submitted or registered a complaint.
 """
 
     try:
-        client = Groq(api_key=api_key)
-        response = client.chat.completions.create(
-            model=st.session_state.settings["model"],
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": question},
-            ],
-            temperature=float(st.session_state.settings["temperature"]),
-            max_completion_tokens=int(st.session_state.settings["max_tokens"]),
+
+        client = Groq(
+            api_key=api_key
         )
-        return response.choices[0].message.content.strip()
+
+        response = (
+            client.chat.completions.create(
+                model=st.session_state.settings[
+                    "model"
+                ],
+
+                messages=[
+                    {
+                        "role": "system",
+                        "content": system_prompt,
+                    },
+                    {
+                        "role": "user",
+                        "content": question,
+                    },
+                ],
+
+                temperature=float(
+                    st.session_state.settings[
+                        "temperature"
+                    ]
+                ),
+
+                max_completion_tokens=int(
+                    st.session_state.settings[
+                        "max_tokens"
+                    ]
+                ),
+            )
+        )
+
+        return (
+            response.choices[0]
+            .message.content
+            .strip()
+        )
 
     except Exception as exc:
+
         return (
-            "⚠️ Unable to generate an answer right now.\n\n"
+            "⚠️ Unable to generate an "
+            "answer right now.\n\n"
             f"Technical detail: {exc}"
         )
 
 
-def process_question(question: str):
+def process_question(
+    question: str,
+):
+
     question = question.strip()
+
     if not question:
         return
 
     results = retrieve_context(
         question,
-        st.session_state.settings["top_k"],
-        st.session_state.settings["min_score"],
+        st.session_state.settings[
+            "top_k"
+        ],
+        st.session_state.settings[
+            "min_score"
+        ],
     )
 
-    answer = generate_answer(question, results)
-    st.session_state.last_retrieval = results
+    answer = generate_answer(
+        question,
+        results,
+    )
+
+    st.session_state.last_retrieval = (
+        results
+    )
 
     st.session_state.messages.append(
-        {"role": "user", "content": question}
+        {
+            "role": "user",
+            "content": question,
+        }
     )
+
     st.session_state.messages.append(
-        {"role": "assistant", "content": answer, "sources": results}
+        {
+            "role": "assistant",
+            "content": answer,
+            "sources": results,
+        }
     )
 
 
 def clear_conversation():
+
     st.session_state.messages = []
+
     st.session_state.last_retrieval = []
 
 
@@ -780,8 +1353,15 @@ def clear_conversation():
 # ============================================================
 
 with st.sidebar:
-    st.title("⚖️ Digital Justice")
-    st.caption("LEGAL-TECH • RAG • DIGITAL RIGHTS")
+
+    st.title(
+        "⚖️ Digital Justice"
+    )
+
+    st.caption(
+        "LEGAL-TECH • RAG • DIGITAL RIGHTS"
+    )
+
     st.divider()
 
     page = st.radio(
@@ -797,10 +1377,16 @@ with st.sidebar:
     )
 
     st.divider()
+
     st.caption("CYBERCRIME")
 
-    st.markdown("**Need to report a cybercrime?**")
-    st.caption("Use the official NCCIA complaint portal.")
+    st.markdown(
+        "**Need to report a cybercrime?**"
+    )
+
+    st.caption(
+        "Use the official NCCIA complaint portal."
+    )
 
     st.link_button(
         "Open NCCIA Complaint Portal ↗",
@@ -809,18 +1395,39 @@ with st.sidebar:
     )
 
     st.divider()
+
     st.caption("RAG STATUS")
 
-    status_box = st.container(border=True)
+    status_box = st.container(
+        border=True
+    )
+
     with status_box:
-        st.write(f"**Documents:** {len(st.session_state.documents)}")
-        st.write(f"**Indexed chunks:** {len(st.session_state.chunks)}")
-        st.write(f"**Model:** {st.session_state.settings['model']}")
+
+        st.write(
+            f"**Documents:** "
+            f"{len(st.session_state.documents)}"
+        )
+
+        st.write(
+            f"**Indexed chunks:** "
+            f"{len(st.session_state.chunks)}"
+        )
+
+        st.write(
+            f"**Model:** "
+            f"{st.session_state.settings['model']}"
+        )
 
     st.write("")
 
-    if st.button("Clear Conversation", use_container_width=True):
+    if st.button(
+        "Clear Conversation",
+        use_container_width=True,
+    ):
+
         clear_conversation()
+
         st.rerun()
 
 
@@ -828,8 +1435,13 @@ with st.sidebar:
 # TOP BRAND
 # ============================================================
 
-st.markdown("## ⚖️  Digital Justice")
-st.caption("Know Your Rights. Navigate the Digital World.")
+st.markdown(
+    "## ⚖️  Digital Justice"
+)
+
+st.caption(
+    "Know Your Rights. Navigate the Digital World."
+)
 
 
 # ============================================================
@@ -837,23 +1449,54 @@ st.caption("Know Your Rights. Navigate the Digital World.")
 # ============================================================
 
 if page == "⚖️ Legal Chat":
-    with st.container(border=True):
-        st.caption("DIGITAL RIGHTS • LEGAL INFORMATION • RAG")
-        st.markdown("## Know Your Rights.")
+
+    with st.container(
+        border=True
+    ):
+
+        st.caption(
+            "DIGITAL RIGHTS • LEGAL INFORMATION • RAG"
+        )
+
+        st.markdown(
+            "## Know Your Rights."
+        )
+
         st.write(
-            "Ask questions about digital rights, cybercrime, online harassment, "
-            "privacy, digital safety and the legal information contained in your "
-            "knowledge base. Digital Justice retrieves relevant sources before "
-            "generating an answer."
+            "Ask questions about digital rights, cybercrime, "
+            "online harassment, privacy, digital safety and "
+            "the legal information contained in your knowledge "
+            "base. Digital Justice retrieves relevant sources "
+            "before generating an answer."
         )
 
     m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Documents", len(st.session_state.documents))
-    m2.metric("Indexed Chunks", len(st.session_state.chunks))
-    m3.metric("Top-K", st.session_state.settings["top_k"])
-    m4.metric("Retrieval", "TF-IDF")
 
-    st.markdown("### Suggested questions")
+    m1.metric(
+        "Documents",
+        len(st.session_state.documents),
+    )
+
+    m2.metric(
+        "Indexed Chunks",
+        len(st.session_state.chunks),
+    )
+
+    m3.metric(
+        "Top-K",
+        st.session_state.settings[
+            "top_k"
+        ],
+    )
+
+    m4.metric(
+        "Retrieval",
+        "TF-IDF",
+    )
+
+    st.markdown(
+        "### Suggested questions"
+    )
 
     suggestions = [
         "What is PECA and what does it cover?",
@@ -865,42 +1508,83 @@ if page == "⚖️ Legal Chat":
     ]
 
     cols = st.columns(2)
-    for i, suggestion in enumerate(suggestions):
+
+    for i, suggestion in enumerate(
+        suggestions
+    ):
+
         with cols[i % 2]:
+
             if st.button(
                 suggestion,
                 key=f"suggestion_{i}",
                 use_container_width=True,
             ):
-                process_question(suggestion)
+
+                process_question(
+                    suggestion
+                )
+
                 st.rerun()
+
     if not st.session_state.documents:
+
         st.info(
             "Knowledge Base is currently empty. "
-            "Upload legal documents from the Knowledge Base section "
-            "for grounded RAG answers."
+            "Upload legal documents from the Knowledge Base "
+            "section for grounded RAG answers."
         )
 
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+    for message in (
+        st.session_state.messages
+    ):
+
+        with st.chat_message(
+            message["role"]
+        ):
+
+            st.markdown(
+                message["content"]
+            )
 
             if (
                 message["role"] == "assistant"
-                and st.session_state.settings["show_sources"]
+                and st.session_state.settings[
+                    "show_sources"
+                ]
                 and message.get("sources")
             ):
-                with st.expander("View retrieved sources"):
-                    for chunk, score in message["sources"]:
-                        st.markdown(f"**{chunk.source}**")
-                        st.caption(f"Similarity: {score:.3f}")
-                        st.write(chunk.text)
+
+                with st.expander(
+                    "View retrieved sources"
+                ):
+
+                    for chunk, score in (
+                        message["sources"]
+                    ):
+
+                        st.markdown(
+                            f"**{chunk.source}**"
+                        )
+
+                        st.caption(
+                            f"Similarity: {score:.3f}"
+                        )
+
+                        st.write(
+                            chunk.text
+                        )
 
     question = st.chat_input(
         "Ask Digital Justice about your digital rights..."
     )
+
     if question:
-        process_question(question)
+
+        process_question(
+            question
+        )
+
         st.rerun()
 
     st.caption(
@@ -914,103 +1598,250 @@ if page == "⚖️ Legal Chat":
 # ============================================================
 
 elif page == "📚 Knowledge Base":
-    st.markdown("## Knowledge Base")
-    st.caption("Upload trusted legal documents to ground the assistant.")
+
+    st.markdown(
+        "## Knowledge Base"
+    )
+
+    st.caption(
+        "Upload trusted legal documents to ground the assistant."
+    )
 
     uploaded = st.file_uploader(
         "Upload documents",
-        type=["pdf", "docx", "txt", "md", "csv"],
+        type=[
+            "pdf",
+            "docx",
+            "txt",
+            "md",
+            "csv",
+        ],
         accept_multiple_files=True,
-        help="Supported formats: PDF, DOCX, TXT, Markdown and CSV.",
+        help=(
+            "Supported formats: "
+            "PDF, DOCX, TXT, Markdown and CSV."
+        ),
     )
 
     if uploaded:
+
         added = 0
         skipped = 0
 
         for file in uploaded:
+
             data = file.getvalue()
-            file_hash = calculate_file_hash(data)
+
+            file_hash = (
+                calculate_file_hash(
+                    data
+                )
+            )
 
             already_exists = any(
-                meta.get("hash") == file_hash
-                for meta in st.session_state.document_meta.values()
+                meta.get("hash")
+                == file_hash
+
+                for meta in (
+                    st.session_state
+                    .document_meta
+                    .values()
+                )
             )
 
             if already_exists:
+
                 skipped += 1
+
                 continue
 
             try:
-                text = extract_text(file.name, data)
+
+                text = extract_text(
+                    file.name,
+                    data,
+                )
 
                 if not text:
-                    st.warning(f"Could not extract readable text from {file.name}.")
+
+                    st.warning(
+                        "Could not extract readable "
+                        f"text from {file.name}."
+                    )
+
                     continue
 
-                # Avoid overwriting a document with the same filename.
                 source_name = file.name
-                if source_name in st.session_state.documents:
-                    stem, ext = os.path.splitext(file.name)
-                    source_name = f"{stem} ({file_hash[:8]}){ext}"
 
-                st.session_state.documents[source_name] = text
-                st.session_state.document_meta[source_name] = {
+                if (
+                    source_name
+                    in st.session_state.documents
+                ):
+
+                    stem, ext = (
+                        os.path.splitext(
+                            file.name
+                        )
+                    )
+
+                    source_name = (
+                        f"{stem} "
+                        f"({file_hash[:8]})"
+                        f"{ext}"
+                    )
+
+                st.session_state.documents[
+                    source_name
+                ] = text
+
+                st.session_state.document_meta[
+                    source_name
+                ] = {
                     "hash": file_hash,
                     "characters": len(text),
                 }
+
                 added += 1
 
             except Exception as exc:
-                st.error(f"Failed to process {file.name}: {exc}")
+
+                st.error(
+                    f"Failed to process "
+                    f"{file.name}: {exc}"
+                )
 
         if added:
+
             rebuild_index()
+
             create_tfidf_matrix.clear()
-            st.success(f"{added} document(s) added and indexed.")
+
+            st.success(
+                f"{added} document(s) "
+                "added and indexed."
+            )
 
         if skipped:
-            st.info(f"{skipped} duplicate document(s) skipped.")
+
+            st.info(
+                f"{skipped} duplicate "
+                "document(s) skipped."
+            )
 
     st.divider()
-    st.markdown("### Current documents")
+
+    st.markdown(
+        "### Current documents"
+    )
 
     if not st.session_state.documents:
-        st.warning("No documents uploaded yet.")
+
+        st.warning(
+            "No documents uploaded yet."
+        )
+
     else:
-        for source, text in list(st.session_state.documents.items()):
-            c1, c2, c3 = st.columns([5, 2, 1])
+
+        for source, text in list(
+            st.session_state.documents.items()
+        ):
+
+            c1, c2, c3 = st.columns(
+                [5, 2, 1]
+            )
 
             with c1:
-                st.markdown(f"**{source}**")
+
+                st.markdown(
+                    f"**{source}**"
+                )
 
             with c2:
-                st.caption(f"{len(text):,} characters")
+
+                st.caption(
+                    f"{len(text):,} characters"
+                )
 
             with c3:
-                if st.button("Remove", key=f"remove_{source}"):
-                    st.session_state.documents.pop(source, None)
-                    st.session_state.document_meta.pop(source, None)
+
+                if st.button(
+                    "Remove",
+                    key=f"remove_{source}",
+                ):
+
+                    st.session_state.documents.pop(
+                        source,
+                        None,
+                    )
+
+                    st.session_state.document_meta.pop(
+                        source,
+                        None,
+                    )
+
                     rebuild_index()
+
                     create_tfidf_matrix.clear()
+
                     st.rerun()
 
     st.divider()
-    st.markdown("### RAG Pipeline")
+
+    st.markdown(
+        "### RAG Pipeline"
+    )
 
     pipeline = [
-        ("01", "Upload", "Add trusted legal documents."),
-        ("02", "Extract", "Extract readable text."),
-        ("03", "Chunk", "Split documents into searchable chunks."),
-        ("04", "Index", "Build TF-IDF representations."),
-        ("05", "Retrieve", "Find the most relevant chunks."),
-        ("06", "Generate", "Ask the Groq model using retrieved context."),
-        ("07", "Answer", "Return a grounded legal-information response."),
+        (
+            "01",
+            "Upload",
+            "Add trusted legal documents.",
+        ),
+        (
+            "02",
+            "Extract",
+            "Extract readable text.",
+        ),
+        (
+            "03",
+            "Chunk",
+            "Split documents into searchable chunks.",
+        ),
+        (
+            "04",
+            "Index",
+            "Build TF-IDF representations.",
+        ),
+        (
+            "05",
+            "Retrieve",
+            "Find the most relevant chunks.",
+        ),
+        (
+            "06",
+            "Generate",
+            "Ask the Groq model using retrieved context.",
+        ),
+        (
+            "07",
+            "Answer",
+            "Return a grounded legal-information response.",
+        ),
     ]
 
-    for number, title, description in pipeline:
-        with st.expander(f"{number}  {title}"):
-            st.write(description)
+    for (
+        number,
+        title,
+        description,
+    ) in pipeline:
+
+        with st.expander(
+            f"{number}  {title}"
+        ):
+
+            st.write(
+                description
+            )
 
 
 # ============================================================
@@ -1018,48 +1849,105 @@ elif page == "📚 Knowledge Base":
 # ============================================================
 
 elif page == "🧩 Chunk Manager":
-    st.markdown("## Chunk Manager")
-    st.caption("Inspect exactly what the retrieval layer can search.")
+
+    st.markdown(
+        "## Chunk Manager"
+    )
+
+    st.caption(
+        "Inspect exactly what the retrieval layer can search."
+    )
 
     average_size = (
-        sum(len(chunk.text) for chunk in st.session_state.chunks)
-        / len(st.session_state.chunks)
+        sum(
+            len(chunk.text)
+            for chunk
+            in st.session_state.chunks
+        )
+        / len(
+            st.session_state.chunks
+        )
         if st.session_state.chunks
         else 0
     )
 
     a, b, c = st.columns(3)
-    a.metric("Documents", len(st.session_state.documents))
-    b.metric("Chunks", len(st.session_state.chunks))
-    c.metric("Average Chunk", f"{average_size:.0f} chars")
+
+    a.metric(
+        "Documents",
+        len(st.session_state.documents),
+    )
+
+    b.metric(
+        "Chunks",
+        len(st.session_state.chunks),
+    )
+
+    c.metric(
+        "Average Chunk",
+        f"{average_size:.0f} chars",
+    )
 
     if not st.session_state.chunks:
-        st.info("No chunks available. Upload documents first.")
-    else:
-        sources = ["All sources"] + sorted(
-            {chunk.source for chunk in st.session_state.chunks}
+
+        st.info(
+            "No chunks available. "
+            "Upload documents first."
         )
 
-        selected_source = st.selectbox("Filter by source", sources)
+    else:
 
-        visible_chunks = st.session_state.chunks
+        sources = [
+            "All sources"
+        ] + sorted(
+            {
+                chunk.source
+                for chunk
+                in st.session_state.chunks
+            }
+        )
+
+        selected_source = st.selectbox(
+            "Filter by source",
+            sources,
+        )
+
+        visible_chunks = (
+            st.session_state.chunks
+        )
+
         if selected_source != "All sources":
+
             visible_chunks = [
                 chunk
-                for chunk in visible_chunks
-                if chunk.source == selected_source
+
+                for chunk
+                in visible_chunks
+
+                if chunk.source
+                == selected_source
             ]
 
-        st.caption(f"Showing {len(visible_chunks)} chunk(s)")
+        st.caption(
+            f"Showing {len(visible_chunks)} chunk(s)"
+        )
 
         for chunk in visible_chunks:
+
             with st.expander(
-                f"Chunk {chunk.chunk_id} • {chunk.source} • {len(chunk.text)} chars"
+                f"Chunk {chunk.chunk_id} • "
+                f"{chunk.source} • "
+                f"{len(chunk.text)} chars"
             ):
+
                 st.caption(
-                    f"Character range: {chunk.start} → {chunk.end}"
+                    f"Character range: "
+                    f"{chunk.start} → {chunk.end}"
                 )
-                st.write(chunk.text)
+
+                st.write(
+                    chunk.text
+                )
 
 
 # ============================================================
@@ -1067,27 +1955,51 @@ elif page == "🧩 Chunk Manager":
 # ============================================================
 
 elif page == "⚙️ RAG Settings":
-    st.markdown("## RAG Settings")
-    st.caption("Tune chunking, retrieval, generation and transparency.")
 
-    st.markdown("### Chunking")
+    st.markdown(
+        "## RAG Settings"
+    )
+
+    st.caption(
+        "Tune chunking, retrieval, generation and transparency."
+    )
+
+    st.markdown(
+        "### Chunking"
+    )
+
     c1, c2 = st.columns(2)
 
     with c1:
+
         chunk_size = st.slider(
             "Chunk size",
             300,
             2500,
-            int(st.session_state.settings["chunk_size"]),
+            int(
+                st.session_state.settings[
+                    "chunk_size"
+                ]
+            ),
             50,
         )
 
     with c2:
-        max_overlap = min(800, chunk_size // 2)
+
+        max_overlap = min(
+            800,
+            chunk_size // 2,
+        )
+
         current_overlap = min(
-            int(st.session_state.settings["chunk_overlap"]),
+            int(
+                st.session_state.settings[
+                    "chunk_overlap"
+                ]
+            ),
             max_overlap,
         )
+
         chunk_overlap = st.slider(
             "Chunk overlap",
             0,
@@ -1096,30 +2008,47 @@ elif page == "⚙️ RAG Settings":
             25,
         )
 
-    st.markdown("### Retrieval")
+    st.markdown(
+        "### Retrieval"
+    )
+
     r1, r2 = st.columns(2)
 
     with r1:
+
         top_k = st.slider(
             "Top-K retrieved chunks",
             1,
             10,
-            int(st.session_state.settings["top_k"]),
+            int(
+                st.session_state.settings[
+                    "top_k"
+                ]
+            ),
         )
 
     with r2:
+
         min_score = st.slider(
             "Minimum similarity score",
             0.0,
             0.60,
-            float(st.session_state.settings["min_score"]),
+            float(
+                st.session_state.settings[
+                    "min_score"
+                ]
+            ),
             0.01,
         )
 
-    st.markdown("### Generation")
+    st.markdown(
+        "### Generation"
+    )
+
     g1, g2 = st.columns(2)
 
     with g1:
+
         model = st.selectbox(
             "Groq model",
             [
@@ -1128,17 +2057,25 @@ elif page == "⚙️ RAG Settings":
             ],
             index=(
                 0
-                if st.session_state.settings["model"] == "openai/gpt-oss-120b"
+                if st.session_state.settings[
+                    "model"
+                ]
+                == "openai/gpt-oss-120b"
                 else 1
             ),
         )
 
     with g2:
+
         temperature = st.slider(
             "Temperature",
             0.0,
             1.0,
-            float(st.session_state.settings["temperature"]),
+            float(
+                st.session_state.settings[
+                    "temperature"
+                ]
+            ),
             0.05,
         )
 
@@ -1146,24 +2083,44 @@ elif page == "⚙️ RAG Settings":
         "Maximum output tokens",
         400,
         6000,
-        int(st.session_state.settings["max_tokens"]),
+        int(
+            st.session_state.settings[
+                "max_tokens"
+            ]
+        ),
         100,
     )
 
-    st.markdown("### Safety & Transparency")
+    st.markdown(
+        "### Safety & Transparency"
+    )
+
     s1, s2 = st.columns(2)
 
     with s1:
+
         show_sources = st.toggle(
             "Show retrieved sources",
-            value=bool(st.session_state.settings["show_sources"]),
+            value=bool(
+                st.session_state.settings[
+                    "show_sources"
+                ]
+            ),
         )
 
     with s2:
+
         strict_grounding = st.toggle(
             "Strict RAG grounding",
-            value=bool(st.session_state.settings["strict_grounding"]),
-            help="Prefer answers supported by uploaded documents.",
+            value=bool(
+                st.session_state.settings[
+                    "strict_grounding"
+                ]
+            ),
+            help=(
+                "Prefer answers supported "
+                "by uploaded documents."
+            ),
         )
 
     st.divider()
@@ -1173,6 +2130,7 @@ elif page == "⚙️ RAG Settings":
         type="primary",
         use_container_width=True,
     ):
+
         st.session_state.settings.update(
             {
                 "chunk_size": chunk_size,
@@ -1188,9 +2146,14 @@ elif page == "⚙️ RAG Settings":
         )
 
         rebuild_index()
+
         create_tfidf_matrix.clear()
 
-        st.success("RAG settings applied and index rebuilt successfully.")
+        st.success(
+            "RAG settings applied and "
+            "index rebuilt successfully."
+        )
+
         st.rerun()
 
 
@@ -1199,8 +2162,15 @@ elif page == "⚙️ RAG Settings":
 # ============================================================
 
 elif page == "ℹ️ About":
-    st.markdown("## About Digital Justice")
-    st.caption("A legal-information RAG workspace for navigating the digital world.")
+
+    st.markdown(
+        "## About Digital Justice"
+    )
+
+    st.caption(
+        "A legal-information RAG workspace "
+        "for navigating the digital world."
+    )
 
     st.markdown(
         """
@@ -1247,4 +2217,7 @@ and coverage of the uploaded knowledge base.
         use_container_width=True,
     )
 
-    st.caption("Digital Justice • Know Your Rights. Navigate the Digital World.")
+    st.caption(
+        "Digital Justice • "
+        "Know Your Rights. Navigate the Digital World."
+    )
